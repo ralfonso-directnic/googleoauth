@@ -93,11 +93,6 @@ func AuthListen(loginTemplate string,fn func(user goth.User,res http.ResponseWri
 
 	p.Get("/", func(res http.ResponseWriter, req *http.Request) {
     	
-		if err != nil {
-			http.Error(res, err.Error(), http.StatusInternalServerError)
-			return
-		}
-    	
     	
 		t, _ := template.New("foo").Parse(loginTemplate)
 		t.Execute(res,nil)
