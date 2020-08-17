@@ -17,7 +17,7 @@ import (
 
 
 
-func Config() {
+func Config(secret string) {
   
     if(os.Getenv("GOOGLEOAUTH_HOST")==""){
       hst,_ := os.Hostname()
@@ -30,7 +30,7 @@ func Config() {
     }
     
     
-    
+    os.Setenv("SESSION_SECRET",secret)
 
 	goth.UseProviders(
       
