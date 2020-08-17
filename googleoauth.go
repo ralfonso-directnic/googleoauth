@@ -6,19 +6,15 @@ import (
 	"net/http"
 	"log"
 	"github.com/gorilla/pat"
-	"github.com/gorilla/sessions"
 	"github.com/markbates/goth"
 	"github.com/markbates/goth/gothic"
-    "io/ioutil"
-    "os"
-	"github.com/markbates/goth/providers/google"
+        "io/ioutil"
+        "os"
+ 	"github.com/markbates/goth/providers/google"
 )
 
 
 
-var Store sessions.Store
-var Session sessions.Session
-var SessionName = "auth-sess" 
 
 
 func Config() {
@@ -42,12 +38,10 @@ func Config() {
 		google.New(os.Getenv("GOOGLEOAUTH_KEY"), os.Getenv("GOOGLEOAUTH_SECRET"), "http://"+os.Getenv("GOOGLEOAUTH_HOST")+":"+os.Getenv("GOOGLEOAUTH_PORT")+"/auth/google/callback"),
 	)
 	
-	//TODO choose backend
-	Store = sessions.NewCookieStore([]byte(os.Getenv("SESSION_SECRET")))
 
 }
 
-func AuthListen(loginTemplate string,fn func(user goth.User,res http.ResponseWriter)){
+func AuthListen(loginTemplate string,fn func(user goth.User,res http.ResponseWriter,req *http.Request)){
     
     
     //could be a path or could be a string
@@ -69,17 +63,13 @@ func AuthListen(loginTemplate string,fn func(user goth.User,res http.ResponseWri
 			return
 		}
 		
-		Session, _ := Store.Get(req, SessionName)
-
-		
-        err = Session.Save(req, res)
     	
 		if err != nil {
 			http.Error(res, err.Error(), http.StatusInternalServerError)
 			return
 		}
 	
-	    fn(user,res)
+         	    fn(user,res,req)
     
 	})
 
@@ -94,7 +84,7 @@ func AuthListen(loginTemplate string,fn func(user goth.User,res http.ResponseWri
 		
 		if gothUser, err := gothic.CompleteUserAuth(res, req); err == nil {
 		
-		     	    fn(gothUser,res)
+		     	    fn(gothUser,res,req)
 		
 		} else {
 			gothic.BeginAuthHandler(res, req)
@@ -102,12 +92,6 @@ func AuthListen(loginTemplate string,fn func(user goth.User,res http.ResponseWri
 	})
 
 	p.Get("/", func(res http.ResponseWriter, req *http.Request) {
-    	
-    	Session, _ := Store.Get(req, SessionName)
-    	
-    	log.Println(Session.Values)
-    	
-    	err = Session.Save(req, res)
     	
 		if err != nil {
 			http.Error(res, err.Error(), http.StatusInternalServerError)

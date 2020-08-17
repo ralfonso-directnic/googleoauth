@@ -37,7 +37,7 @@ func main(){
     os.Setenv("GOOGLEOAUTH_PORT","8080")
     
     ga.Config()
-    ga.AuthListen(loginTemplate,func(user goth.User,res http.ResponseWriter){
+    ga.AuthListen(loginTemplate,func(user goth.User,res http.ResponseWriter,req *http.Request){
         
          log.Printf("%+v",user)
          t, _ := template.New("foo").Parse(userTemplate)
