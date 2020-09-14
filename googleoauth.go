@@ -111,11 +111,11 @@ func AuthListen(loginTemplate string,fn func(user goth.User,res http.ResponseWri
 	
 	if(len(sslkey)>0 && len(sslcrt)>0){
 	     log.Println("GoogleOAuth https on")
-	     log.Fatal(http.ListenAndServeTLS(":"+os.Getenv("GOOGLEOAUTH_PORT"), sslcrt,sslkey, nil))   
+	     log.Fatal(http.ListenAndServeTLS(":"+os.Getenv("GOOGLEOAUTH_PORT"), sslcrt,sslkey, p))   
 
 	}else{
              log.Println("GoogleOAuth https off")
-	     log.Fatal(http.ListenAndServe(":"+os.Getenv("GOOGLEOAUTH_PORT"), nil))
+	     log.Fatal(http.ListenAndServe(":"+os.Getenv("GOOGLEOAUTH_PORT"), p))
 	}
 	
 }
