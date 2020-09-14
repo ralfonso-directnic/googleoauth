@@ -13,7 +13,9 @@ import (
  	"github.com/markbates/goth/providers/google"
 )
 
-
+var protocol string
+var sslcrt string
+var sslkey string
 
 
 
@@ -29,16 +31,21 @@ func Config(secret string) {
       os.Setenv("GOOGLEOAUTH_PORT","3000")  
     }
     
+    sslkey=os.Getenv("GOOGLEOAUTH_SSLKEY") 
+    sslcrt=os.Getenv("GOOGLEOAUTH_SSLCRT")
 	
+    if(len(sslkey)>0 && len(sslcrt)>0){
+     protocol = "https"
+    }else{ 
+     protocol = "http"
+    }	
 
-    
     os.Setenv("SESSION_SECRET",secret)
 
-	goth.UseProviders(
-      
-
-		google.New(os.Getenv("GOOGLEOAUTH_KEY"), os.Getenv("GOOGLEOAUTH_SECRET"), "http://"+os.Getenv("GOOGLEOAUTH_HOST")+":"+os.Getenv("GOOGLEOAUTH_PORT")+"/auth/google/callback"),
-	)
+    goth.UseProviders(
+     
+		google.New(os.Getenv("GOOGLEOAUTH_KEY"), os.Getenv("GOOGLEOAUTH_SECRET"), protocol+"://"+os.Getenv("GOOGLEOAUTH_HOST")+":"+os.Getenv("GOOGLEOAUTH_PORT")+"/auth/google/callback"),
+    )
 	
 
 }
@@ -99,9 +106,7 @@ func AuthListen(loginTemplate string,fn func(user goth.User,res http.ResponseWri
 		t, _ := template.New("foo").Parse(loginTemplate)
 		t.Execute(res,nil)
 	})
-	
-	sslkey:=os.Getenv("GOOGLEOAUTH_SSLKEY") 
-	sslcrt:=os.Getenv("GOOGLEOAUTH_SSLCRT")
+
 
 	
 	if(len(sslkey)>0 && len(sslcrt)>0){
