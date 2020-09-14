@@ -97,9 +97,23 @@ func AuthListen(loginTemplate string,fn func(user goth.User,res http.ResponseWri
 		t, _ := template.New("foo").Parse(loginTemplate)
 		t.Execute(res,nil)
 	})
-
+	
+	sslkey:=os.Getenv("GOOGLEOAUTH_SSLKEY") 
+	sslcrt:=os.Getenv("GOOGLEOAUTH_SSLCRT")
+	
 	//log.Println("listening on "+os.Getenv("GOOGLEOAUTH_HOST")+":"+os.Getenv("GOOGLEOAUTH_PORT"))
 	log.Fatal(http.ListenAndServe(":"+os.Getenv("GOOGLEOAUTH_PORT"), p))
+	
+	if(len(sslkey)>0 && len(sslcrt)>0){
+
+	     log.Fatal(http.ListenAndServeTLS(":"+os.Getenv("GOOGLEOAUTH_PORT"), sslcert,sslkey, nil))   
+
+	}else{
+
+	     log.Fatal(http.ListenAndServe(":"+os.Getenv("GOOGLEOAUTH_PORT"), nil))        
+
+	}
+	
 }
 
 
