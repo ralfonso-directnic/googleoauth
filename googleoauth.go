@@ -106,7 +106,7 @@ func AuthListen(loginTemplate string,fn func(user goth.User,res http.ResponseWri
 	
 	if(len(sslkey)>0 && len(sslcrt)>0){
 
-	     log.Fatal(http.ListenAndServeTLS(":"+os.Getenv("GOOGLEOAUTH_PORT"), sslcert,sslkey, nil))   
+	     log.Fatal(http.ListenAndServeTLS(":"+os.Getenv("GOOGLEOAUTH_PORT"), sslcrt,sslkey, nil))   
 
 	}else{
 
