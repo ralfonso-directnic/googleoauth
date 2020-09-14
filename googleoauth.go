@@ -29,6 +29,8 @@ func Config(secret string) {
       os.Setenv("GOOGLEOAUTH_PORT","3000")  
     }
     
+	
+log.Println(os.Environ())
     
     os.Setenv("SESSION_SECRET",secret)
 
